@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>İlanlar - Modern Sınıflandırılmış İlan Platformu</title>
+  <meta name="description" content="İş ilanları, konut, satılık, hizmetler, topluluk ve etkinlikler için yerel ilanlar">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☮</text></svg>">
+  
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+  <!-- Header -->
+  <header class="header" id="mainHeader">
+    <div class="container">
+      <div class="header-content">
+        <!-- NEW: Country/Region Selector Button -->
+        <button class="region-btn" id="regionBtn" aria-label="Select Region" title="Select Country/Region">
+          <span class="region-icon">☰</span>
+          <span class="region-text" data-i18n="current_region">Global</span>
+        </button>
+
+        <!-- NEW: City Selector Button (appears after country is selected) -->
+        <button class="city-btn" id="cityBtn" style="display: none;" aria-label="Select City" title="Select City">
+          <span class="city-icon">🏙️</span>
+          <span class="city-text" data-i18n="select_city">Select City</span>
+        </button>
+
+        <!-- Logo -->
+        <a href="#" class="logo" aria-label="Ana Sayfa">
+          <span class="logo-icon">☮</span>
+          <span class="logo-text" data-i18n="site_name">craigslist</span>
+        </a>
+
+        <!-- Search Bar (Desktop) -->
+        <div class="search-wrapper desktop-search">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input 
+              type="text" 
+              id="searchInput" 
+              class="search-input" 
+              placeholder="Ne arıyorsunuz? (/ tuşu ile odakla)"
+              data-i18n-placeholder="search_placeholder"
+              aria-label="İlan ara">
+            <button class="search-clear" id="clearSearch" aria-label="Aramayı temizle">×</button>
+          </div>
+          <input 
+            type="text" 
+            id="locationInput" 
+            class="location-input" 
+            placeholder="📍 Şehir / Bölge"
+            data-i18n-placeholder="location_placeholder"
+            aria-label="Konum">
+        </div>
+
+        <!-- Header Actions -->
+        <div class="header-actions">
+          <!-- NEW: Calendar Button -->
+          <button class="icon-btn" id="calendarBtn" aria-label="Calendar Filter" title="Date Filter">
+            <span>📅</span>
+          </button>
+
+          <!-- NEW: Language Selector -->
+          <div class="language-selector">
+            <button class="icon-btn" id="languageBtn" aria-label="Change Language" title="Language">
+              <span id="currentLangFlag">🇹🇷</span>
+            </button>
+            <div class="language-dropdown" id="languageDropdown">
+              <button class="lang-option" data-lang="tr">
+                <span class="flag">🇹🇷</span>
+                <span>Türkçe</span>
+              </button>
+              <button class="lang-option" data-lang="en">
+                <span class="flag">🇬🇧</span>
+                <span>English</span>
+              </button>
+              <button class="lang-option" data-lang="ar">
+                <span class="flag">🇸🇦</span>
+                <span>العربية</span>
+              </button>
+            </div>
+          </div>
+
+          <button class="icon-btn" id="themeToggle" aria-label="Tema değiştir" title="Dark/Light Mode">
+            <span class="theme-icon">🌙</span>
+          </button>
+          <button class="icon-btn" id="bookmarksBtn" aria-label="Favoriler" title="Favorilerim (b)">
+            <span>⭐</span>
+            <span class="badge" id="bookmarkBadge">0</span>
+          </button>
+          <button class="btn-primary" id="postAdBtn">
+            <span>✏️</span>
+            <span class="btn-text" data-i18n="post_ad">İlan Ver</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Search -->
+      <div class="search-wrapper mobile-search">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="searchInputMobile" 
+            class="search-input" 
+            placeholder="İlan ara..."
+            data-i18n-placeholder="search_placeholder_mobile"
+            aria-label="İlan ara">
+        </div>
+        <input 
+          type="text" 
+          id="locationInputMobile" 
+          class="location-input" 
+          placeholder="📍 Konum"
+          data-i18n-placeholder="location_placeholder"
+          aria-label="Konum">
+      </div>
+    </div>
+  </header>
+
+  <!-- NEW: Region/Country Selector Panel -->
+  <div class="region-panel" id="regionPanel">
+    <div class="region-panel-overlay" id="regionPanelOverlay"></div>
+    <div class="region-panel-content">
+      <div class="region-panel-header">
+        <h3 data-i18n="select_region">Select Region</h3>
+        <button class="region-panel-close" id="regionPanelClose">×</button>
+      </div>
+      <div class="region-panel-body" id="regionPanelBody">
+        <!-- Continents and countries will be populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW: City Selector Panel -->
+  <div class="city-panel" id="cityPanel">
+    <div class="city-panel-overlay" id="cityPanelOverlay"></div>
+    <div class="city-panel-content">
+      <div class="city-panel-header">
+        <h3 data-i18n="select_city">Select City</h3>
+        <button class="city-panel-close" id="cityPanelClose">×</button>
+      </div>
+      <div class="city-search-wrapper">
+        <input 
+          type="text" 
+          id="citySearchInput" 
+          class="city-search-input" 
+          placeholder="Search cities..."
+          data-i18n-placeholder="search_cities">
+      </div>
+      <div class="city-panel-body" id="cityPanelBody">
+        <!-- Cities will be populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW: Calendar Panel -->
+  <div class="calendar-panel" id="calendarPanel">
+    <div class="calendar-panel-overlay" id="calendarPanelOverlay"></div>
+    <div class="calendar-panel-content">
+      <div class="calendar-panel-header">
+        <h3 data-i18n="date_filter">Date Filter</h3>
+        <button class="calendar-panel-close" id="calendarPanelClose">×</button>
+      </div>
+      <div class="calendar-panel-body">
+        <div class="date-presets">
+          <button class="date-preset-btn" data-preset="today" data-i18n="today">Today</button>
+          <button class="date-preset-btn" data-preset="yesterday" data-i18n="yesterday">Yesterday</button>
+          <button class="date-preset-btn" data-preset="last7days" data-i18n="last_7_days">Last 7 Days</button>
+          <button class="date-preset-btn" data-preset="last30days" data-i18n="last_30_days">Last 30 Days</button>
+          <button class="date-preset-btn active" data-preset="all" data-i18n="all_dates">All Dates</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Filter Chips -->
+  <section class="filter-chips-section" aria-label="Kategori filtreleri">
+    <div class="container">
+      <div class="filter-chips" id="filterChips">
+        <button class="chip active" data-category="all" data-i18n="all">Tümü</button>
+        <button class="chip" data-category="kalacak-yer"><span>🏠</span> <span data-i18n="housing">Kalacak Yer</span></button>
+        <button class="chip" data-category="is-ilanlari"><span>💼</span> <span data-i18n="jobs">İş İlanları</span></button>
+        <button class="chip" data-category="satilik"><span>🛍️</span> <span data-i18n="for_sale">Satılık</span></button>
+        <button class="chip" data-category="hizmetler"><span>🔧</span> <span data-i18n="services">Hizmetler</span></button>
+        <button class="chip" data-category="topluluk"><span>👥</span> <span data-i18n="community">Topluluk</span></button>
+        <button class="chip" data-category="vasitalar"><span>🚗</span> <span data-i18n="vehicles">Vasıtalar</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toolbar (Sort & View Options) -->
+  <section class="toolbar" aria-label="Sıralama ve görünüm seçenekleri">
+    <div class="container">
+      <div class="toolbar-content">
+        <div class="results-info">
+          <span id="resultsCount">0 <span data-i18n="listings">ilan</span></span>
+        </div>
+        <div class="toolbar-actions">
+          <select id="sortSelect" class="sort-select" aria-label="Sırala">
+            <option value="date-desc" data-i18n="newest">En Yeni</option>
+            <option value="date-asc" data-i18n="oldest">En Eski</option>
+            <option value="price-asc" data-i18n="price_low_high">Fiyat: Düşükten Yükseğe</option>
+            <option value="price-desc" data-i18n="price_high_low">Fiyat: Yüksekten Düşüğe</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Active Filters Display -->
+      <div class="active-filters" id="activeFilters" style="display: none;">
+        <!-- Filter tags will appear here -->
+      </div>
+
+      <!-- Listings Grid -->
+      <div class="listings-grid" id="listingsGrid">
+        <!-- Skeleton loaders will be shown here initially -->
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-icon">🔍</div>
+        <h2 data-i18n="no_listings_found">İlan Bulunamadı</h2>
+        <p data-i18n="no_listings_message">Arama kriterlerinize uygun ilan bulunamadı. Farklı filtreler deneyin.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal: Listing Detail -->
+  <div class="modal" id="detailModal" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 id="modalTitle" class="modal-title" data-i18n="listing_detail">İlan Detayı</h2>
+        <button class="modal-close" id="modalClose" aria-label="Kapat">×</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Dynamic content will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Post New Ad -->
+  <div class="modal" id="postModal" role="dialog" aria-labelledby="postModalTitle" aria-hidden="true">
+    <div class="modal-overlay" id="postModalOverlay"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 id="postModalTitle" class="modal-title" data-i18n="post_new_ad">Yeni İlan Ver</h2>
+        <button class="modal-close" id="postModalClose" aria-label="Kapat">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="postAdForm" class="post-form">
+          <div class="form-group">
+            <label for="adTitle" data-i18n="ad_title">İlan Başlığı *</label>
+            <input type="text" id="adTitle" required placeholder="örn: 2+1 Kiralık Daire - Merkez" data-i18n-placeholder="ad_title_placeholder">
+          </div>
+          
+          <div class="form-group">
+            <label for="adCategory" data-i18n="category">Kategori *</label>
+            <select id="adCategory" required>
+              <option value="" data-i18n="select_category">Kategori Seçin</option>
+              <option value="kalacak-yer" data-i18n="housing">Kalacak Yer</option>
+              <option value="is-ilanlari" data-i18n="jobs">İş İlanları</option>
+              <option value="satilik" data-i18n="for_sale">Satılık</option>
+              <option value="hizmetler" data-i18n="services">Hizmetler</option>
+              <option value="topluluk" data-i18n="community">Topluluk</option>
+              <option value="vasitalar" data-i18n="vehicles">Vasıtalar</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="adPrice" data-i18n="price">Fiyat (₺)</label>
+              <input type="number" id="adPrice" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+              <label for="adLocation" data-i18n="location">Konum *</label>
+              <input type="text" id="adLocation" required placeholder="örn: İstanbul, Kadıköy" data-i18n-placeholder="location_example">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="adDescription" data-i18n="description">Açıklama *</label>
+            <textarea id="adDescription" rows="5" required placeholder="İlanınızın detaylı açıklamasını yazın..." data-i18n-placeholder="description_placeholder"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="adContact" data-i18n="contact_info">İletişim Bilgisi *</label>
+            <input type="text" id="adContact" required placeholder="Telefon veya Email" data-i18n-placeholder="contact_placeholder">
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="cancelPostBtn" data-i18n="cancel">İptal</button>
+            <button type="submit" class="btn-primary" data-i18n="publish_ad">İlanı Yayınla</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Bookmarks -->
+  <div class="modal" id="bookmarksModal" role="dialog" aria-labelledby="bookmarksModalTitle" aria-hidden="true">
+    <div class="modal-overlay" id="bookmarksModalOverlay"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 id="bookmarksModalTitle" class="modal-title">⭐ <span data-i18n="my_favorites">Favorilerim</span></h2>
+        <button class="modal-close" id="bookmarksModalClose" aria-label="Kapat">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="bookmarksContent" class="bookmarks-list">
+          <!-- Bookmarked listings will be shown here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="#" data-i18n="help">Yardım</a>
+          <a href="#" data-i18n="safety">Güvenlik</a>
+          <a href="#" data-i18n="privacy">Gizlilik</a>
+          <a href="#" data-i18n="terms">Kurallar</a>
+          <a href="#" data-i18n="about">Hakkında</a>
+          <a href="#" data-i18n="app">Uygulama</a>
+        </div>
+        <div class="footer-copy">
+          &copy; <span id="year">2025</span> <span data-i18n="site_name">İlanlar</span> - <span data-i18n="rights">Tüm hakları saklıdır</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- External JS -->
+  <script src="app.js"></script>
+</body>
+</html>
